@@ -11,18 +11,37 @@
 
 <section>
 	<div class="flex h-[92svh] items-center justify-center">
-		<div class="flex items-center">
-			<img class="w-[50svh]" src={heroPic} alt="Hero Section" />
-			<div class="">
-				<h1 class="text-6xl font-extrabold leading-[80px]">HỌC TẬP, CHIA SẺ</h1>
-				<h1 class="text-6xl font-extrabold leading-[80px]">KIẾN THỨC, PHÁT TRIỂN</h1>
-				<p class="text-lg">3sEdu mang đến cho bạn những cách học chất lượng nhất</p>
+		<div class="flex items-center gap-[40px]">
+			<img class="w-[400px]" src={heroPic} alt="Hero Section" />
+			<div>
+				<div class="flex flex-col items-start">
+					<h1 class="text-6xl font-extrabold leading-[80px] text-violet-700">
+						HỌC TẬP, <span class="text-purple-500">CHIA SẺ</span>
+					</h1>
+					<h1 class="text-6xl font-extrabold leading-[80px] text-violet-500">
+						KIẾN THỨC, <span class="text-purple-400">PHÁT TRIỂN</span>
+					</h1>
+					<p class="text-xl text-slate-800">
+						3sEdu mang đến cho bạn những cách học chất lượng nhất
+					</p>
+				</div>
 				<button
-					class="flex w-[390px] items-center rounded-full bg-violet-700 p-[5px] pl-[20px] text-4xl font-extrabold text-white"
+					class="mt-[32px] box-border flex h-[85px] animate-bounce items-center justify-center rounded-full bg-violet-700 p-[5px] pl-[25px] text-4xl font-extrabold text-white shadow-xl transition-all duration-300 hover:translate-x-6"
 					on:click={() => {
 						goto('/study');
-					}}>BẮT ĐẦU NGAY <img class="ml-auto w-[70px]" src={arrow} alt="Arrow" /></button
+					}}>BẮT ĐẦU NGAY <img class="ml-[50px] w-[70px]" src={arrow} alt="Arrow" /></button
 				>
+			</div>
+		</div>
+	</div>
+	<div>
+		<div class="relative w-[100%]">
+			<div class="relative h-[300px] w-[90%] overflow-hidden">
+				<div class="absolute h-[500px] w-[300px] rounded-md bg-red-700 duration-[45s]"></div>
+				<div class="absolute h-[500px] w-[300px] rounded-md bg-red-700 duration-[45s]"></div>
+				<div class="absolute h-[500px] w-[300px] rounded-md bg-red-700 duration-[45s]"></div>
+				<div class="absolute h-[500px] w-[300px] rounded-md bg-red-700 duration-[45s]"></div>
+				<div class="absolute h-[500px] w-[300px] rounded-md bg-red-700 duration-[45s]"></div>
 			</div>
 		</div>
 	</div>

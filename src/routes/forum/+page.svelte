@@ -65,9 +65,9 @@
 		</button>
 		{#if formPanel}
 			<div
-				class="fixed left-0 top-0 flex h-screen w-screen items-center justify-center bg-slate-900 bg-opacity-40"
+				class="fixed left-0 top-0 z-10 flex h-screen w-screen items-center justify-center bg-slate-900 bg-opacity-40"
 			>
-				<div class="flex w-96 flex-col rounded-2xl bg-slate-50 px-8 py-5 shadow-2xl">
+				<div class="z-20 flex w-96 flex-col rounded-2xl bg-slate-50 px-8 py-5 shadow-2xl">
 					<button
 						class="ml-auto"
 						on:click={() => {
@@ -109,13 +109,15 @@
 
 		<div class="flex flex-col gap-8">
 			{#each posts as post}
-				<div class="relative flex gap-10 rounded-md bg-slate-100 px-10 py-7">
+				<div class="relative flex gap-10 rounded-md bg-slate-100 px-10 py-7 shadow-lg">
 					{#if post.author == user.displayName}
 						<button class="absolute right-5 top-4 text-red-500" on:click={() => {}}
 							>Xóa bài viết này</button
 						>
 					{/if}
-					<div class="flex flex-col items-center justify-center gap-2">
+					<div
+						class="flex flex-col items-center justify-center gap-2 rounded-md bg-slate-50 px-[20px] py-[10px] shadow-md"
+					>
 						<h2>Đăng bởi:</h2>
 						<img
 							class="w-[90px] rounded-full"
@@ -128,14 +130,14 @@
 						<h2 class="text-semibold text-2xl">{post.title}</h2>
 						<span>Môn học: {post.subject}</span>
 						<p>Nội dung: {post.content}</p>
+						<h2 class="mt-4 text-slate-600">Thời gian đăng: {post.timestamp}</h2>
 						{#each post.replies as reply}
-							<div>
+							<div class="">
 								<h3>{reply.author}</h3>
 								<span>{reply.timestamp}</span>
 								<p>{reply.content}</p>
 							</div>
 						{/each}
-						<h2 class="mt-4 text-slate-600">Thời gian đăng: {post.timestamp}</h2>
 					</div>
 				</div>
 			{/each}
