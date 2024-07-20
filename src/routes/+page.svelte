@@ -1,59 +1,29 @@
-<script>
-	import Counter from './Counter.svelte';
-	import welcome from '$lib/images/svelte-welcome.webp';
-	import welcome_fallback from '$lib/images/svelte-welcome.png';
+<script lang="ts">
+	import heroPic from '$lib/images/main-pic.webp';
+	import arrow from '$lib/images/icon_arrow.svg';
+	import { goto } from '$app/navigation';
 </script>
 
 <svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
+	<title>Trang chủ</title>
+	<meta name="description" content="Trang chủ 3sEdu" />
 </svelte:head>
 
 <section>
-	<h1>
-		<span class="welcome">
-			<picture>
-				<source srcset={welcome} type="image/webp" />
-				<img src={welcome_fallback} alt="Welcome" />
-			</picture>
-		</span>
-
-		to your new<br />SvelteKit app
-	</h1>
-
-	<h2>
-		try editing <strong>src/routes/+page.svelte</strong>
-	</h2>
-
-	<Counter />
+	<div class="flex h-[92svh] items-center justify-center">
+		<div class="flex items-center">
+			<img class="w-[50svh]" src={heroPic} alt="Hero Section" />
+			<div class="">
+				<h1 class="text-6xl font-extrabold leading-[80px]">HỌC TẬP, CHIA SẺ</h1>
+				<h1 class="text-6xl font-extrabold leading-[80px]">KIẾN THỨC, PHÁT TRIỂN</h1>
+				<p class="text-lg">3sEdu mang đến cho bạn những cách học chất lượng nhất</p>
+				<button
+					class="flex w-[390px] items-center rounded-full bg-violet-700 p-[5px] pl-[20px] text-4xl font-extrabold text-white"
+					on:click={() => {
+						goto('/study');
+					}}>BẮT ĐẦU NGAY <img class="ml-auto w-[70px]" src={arrow} alt="Arrow" /></button
+				>
+			</div>
+		</div>
+	</div>
 </section>
-
-<style>
-	section {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		flex: 0.6;
-	}
-
-	h1 {
-		width: 100%;
-	}
-
-	.welcome {
-		display: block;
-		position: relative;
-		width: 100%;
-		height: 0;
-		padding: 0 0 calc(100% * 495 / 2048) 0;
-	}
-
-	.welcome img {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		display: block;
-	}
-</style>
