@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { updateProfile, updateEmail, updatePassword, signOut } from 'firebase/auth';
+	import { onMount } from 'svelte';
 	import { auth } from '$lib/firebase';
 	import { goto } from '$app/navigation';
+	let user = auth.currentUser;
 	let newName;
 	let newEmail;
 	let newPassword;
@@ -26,8 +28,17 @@
 			})
 			.catch(() => {});
 	};
+	onMount(() => {
+		const interval = setInterval(() => {
+			user = auth.currentUser;
+		}, 1000);
+
+		return () => clearInterval(interval);
+	});
 </script>
 
+<h1>{user?.displayName}</h1>
+<h1>{user?.email}</h1>
 <form on:submit|preventDefault={changeUserInfo}>
 	<label>
 		Change Username

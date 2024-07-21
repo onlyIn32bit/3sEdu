@@ -1,6 +1,5 @@
 <script lang="ts">
 	import '../app.css';
-	import { page } from '$app/stores';
 	import { onAuthStateChanged } from 'firebase/auth';
 	import { auth } from '$lib/firebase';
 	let loggedIn: boolean;
@@ -61,15 +60,11 @@
 					href="/auth/signup">ĐĂNG KÍ</a
 				>
 			{/if}
-			{#if $page.url.pathname === '/'}
-				<div class="greet">
-					Xin chào, <span id="user-name">{displayname == undefined ? 'Khách' : displayname}</span>
-				</div>
-			{/if}
+			<span id="user-name">{displayname == undefined ? 'Khách' : displayname}</span>
 		</div>
 	</nav>
 
-	<main class="px-52">
+	<main class="">
 		<slot />
 	</main>
 

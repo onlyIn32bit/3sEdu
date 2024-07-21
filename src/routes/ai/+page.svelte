@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { dictionary } from './../../../.svelte-kit/generated/client/app.js';
 	import type { PageData } from './$types';
 	import { marked } from 'marked';
 	export let data: PageData;

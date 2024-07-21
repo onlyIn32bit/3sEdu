@@ -1,22 +1,25 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-	import { auth } from '$lib/firebase';
+	import { auth, db } from '$lib/firebase';
+	import { doc, setDoc } from 'firebase/firestore';
+
 	let name: string;
 	let email: string;
 	let password: string;
-	let user = auth.currentUser;
 
 	const register = () => {
 		createUserWithEmailAndPassword(auth, email, password)
-			.then(() => {
-				updateProfile(auth.currentUser, {
+			.then(async () => {
+				await updateProfile(auth.currentUser, {
 					displayName: name
-				})
-					.then(() => {})
-					.catch((error) => {});
+				});
+				await setDoc(doc(db, 'users', auth.currentUser.uid), {
+					grade: 0,
+					role: null
+				});
 				console.log('Registered');
-				// goto('/');
+				goto('/');
 			})
 			.catch((error) => {
 				const errorCode = error.code;
@@ -26,7 +29,7 @@
 	};
 </script>
 
-<form>
+<form on:submit|preventDefault={register}>
 	<label>
 		Username
 		<input name="username" type="text" required bind:value={name} />
@@ -39,8 +42,5 @@
 		Password
 		<input name="password" type="password" required bind:value={password} />
 	</label>
-	<button type="submit" on:click={register}>Create account</button>
+	<button type="submit">Create account</button>
 </form>
-
-<h1>{user?.displayName}</h1>
-<h1>{user?.email}</h1>

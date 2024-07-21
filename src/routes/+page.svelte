@@ -34,14 +34,24 @@
 			</div>
 		</div>
 	</div>
-	<div>
+	<div class="relative h-[500px]">
 		<div class="relative w-[100%]">
-			<div class="relative h-[300px] w-[90%] overflow-hidden">
-				<div class="absolute h-[500px] w-[300px] rounded-md bg-red-700 duration-[45s]"></div>
-				<div class="absolute h-[500px] w-[300px] rounded-md bg-red-700 duration-[45s]"></div>
-				<div class="absolute h-[500px] w-[300px] rounded-md bg-red-700 duration-[45s]"></div>
-				<div class="absolute h-[500px] w-[300px] rounded-md bg-red-700 duration-[45s]"></div>
-				<div class="absolute h-[500px] w-[300px] rounded-md bg-red-700 duration-[45s]"></div>
+			<div class="relative h-[500px] w-[90%] overflow-hidden">
+				<div
+					class="absolute left-[-300px] h-[500px] w-[300px] animate-infScroll rounded-xl bg-red-700"
+				></div>
+				<div
+					class="absolute left-[-300px] h-[500px] w-[300px] animate-[scrollRight_45s_linear_infinity] rounded-xl bg-red-700"
+				></div>
+				<div
+					class="absolute left-[-300px] h-[500px] w-[300px] animate-[scrollRight_45s_linear_infinity] rounded-xl bg-red-700"
+				></div>
+				<div
+					class="absolute left-[-300px] h-[500px] w-[300px] animate-[scrollRight_45s_linear_infinity] rounded-xl bg-red-700"
+				></div>
+				<div
+					class="absolute left-[-300px] h-[500px] w-[300px] animate-[scrollRight_45s_linear_infinity] rounded-xl bg-red-700"
+				></div>
 			</div>
 		</div>
 	</div>

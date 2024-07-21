@@ -2,7 +2,7 @@
 	import type { PageData } from './$types';
 	import { auth, db } from '$lib/firebase';
 	import { onMount } from 'svelte';
-	import { collection, addDoc } from 'firebase/firestore';
+	import { collection, addDoc, deleteDoc, doc } from 'firebase/firestore';
 	import { invalidateAll } from '$app/navigation';
 	export let data: PageData;
 	$: ({ posts } = data);
@@ -22,6 +22,7 @@
 		time.getMonth() +
 		'/' +
 		time.getFullYear();
+	$: orderTime = time.getTime();
 	onMount(() => {
 		const interval = setInterval(() => {
 			user = auth.currentUser;
@@ -39,21 +40,20 @@
 			replies: [],
 			subject: subject as string,
 			timestamp: currentTime as string,
+			order: orderTime as number,
 			title: title as string
 		};
 		const docRef = addDoc(collection(db, 'posts'), post);
 		console.log('posted');
-		alert('posted');
+		location.reload();
 	};
-
-	const deletePost = () => {};
 </script>
 
 <svelte:head>
 	<title>Diễn đàn</title>
 </svelte:head>
 
-<section data-sveltekit-reload>
+<section data-sveltekit-reload class="px-52">
 	{#if user == undefined}
 		<h1 class="text-center text-2xl">Đang tải...</h1>
 	{:else}
@@ -110,9 +110,13 @@
 		<div class="flex flex-col gap-8">
 			{#each posts as post}
 				<div class="relative flex gap-10 rounded-md bg-slate-100 px-10 py-7 shadow-lg">
-					{#if post.author == user.displayName}
-						<button class="absolute right-5 top-4 text-red-500" on:click={() => {}}
-							>Xóa bài viết này</button
+					{#if post.data.author == user.displayName}
+						<button
+							class="absolute right-5 top-4 text-red-500"
+							on:click={() => {
+								deleteDoc(doc(db, 'posts', post.id));
+								alert('Đã xóa bài viết');
+							}}>Xóa bài viết này</button
 						>
 					{/if}
 					<div
@@ -124,14 +128,14 @@
 							src="https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133352156-stock-illustration-default-placeholder-profile-icon.jpg"
 							alt="Default Avatar"
 						/>
-						<h2 class="text-slate-700">{post.author}</h2>
+						<h2 class="text-slate-700">{post.data.author}</h2>
 					</div>
 					<div>
-						<h2 class="text-semibold text-2xl">{post.title}</h2>
-						<span>Môn học: {post.subject}</span>
-						<p>Nội dung: {post.content}</p>
-						<h2 class="mt-4 text-slate-600">Thời gian đăng: {post.timestamp}</h2>
-						{#each post.replies as reply}
+						<h2 class="text-semibold text-2xl">{post.data.title}</h2>
+						<span>Môn học: {post.data.subject}</span>
+						<p class="text-lg">Nội dung: {post.data.content}</p>
+						<h2 class="mt-4 text-slate-600">Thời gian đăng: {post.data.timestamp}</h2>
+						{#each post.data.replies as reply}
 							<div class="">
 								<h3>{reply.author}</h3>
 								<span>{reply.timestamp}</span>

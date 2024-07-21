@@ -1,17 +1,25 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+const plugin = require('tailwindcss/plugin');
+module.exports = {
 	content: ['./src/**/*.{html,js,svelte,ts}'],
 	theme: {
 		extend: {
 			keyframes: {
 				scrollRight: {
-					'0%, 100%': { right: '-500px' }
+					to: { right: '-300px' }
 				}
 			},
 			animation: {
-				infScroll: 'scrollRight 45s linear infinity'
+				infScroll: 'scrollRight 5s linear infinity'
 			}
 		}
 	},
-	plugins: []
+	plugins: [
+		plugin(function ({ matchUtilities, theme }) {
+			matchUtilities(
+				{ 'animate-delay': (value) => ({ animationDelay: value }) },
+				{ value: theme('transitionDelay') }
+			);
+		})
+	]
 };
