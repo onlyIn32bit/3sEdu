@@ -20,16 +20,32 @@
 	};
 </script>
 
-<form on:submit|preventDefault={login}>
-	<label>
-		Email
-		<input name="email" type="email" required bind:value={email} />
+<form
+	on:submit|preventDefault={login}
+	class="m-36 mx-auto mb-6 max-w-lg rounded-lg bg-white p-8 shadow-md"
+>
+	<label class="mb-2 block text-2xl font-bold">
+		<p class="mb-2">Email</p>
+		<input
+			class="mb-6 block w-full rounded-lg border border-gray-300 p-2 font-normal"
+			name="email"
+			type="email"
+			required
+			bind:value={email}
+		/>
 	</label>
-	<label>
-		Password
-		<input name="password" type="password" required bind:value={password} />
+	<label class="mb-2 block text-2xl font-bold">
+		<p class="mb-2">Password</p>
+		<input
+			class="mb-6 block w-full rounded-lg border border-gray-300 p-2"
+			name="password"
+			type="password"
+			required
+			bind:value={password}
+		/>
 	</label>
-	<button type="submit">Log in</button>
+	<button
+		class="block w-full rounded-lg bg-blue-500 px-4 py-3 text-lg font-bold text-white hover:bg-blue-600"
+		type="submit">Log in</button
+	>
 </form>
-
-<h1>{user?.email}</h1>

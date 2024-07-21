@@ -37,6 +37,7 @@
 	"type": "module",
 	"dependencies": {
 		"@google/generative-ai": "^0.15.0",
+		"cookie": "^0.6.0",
 		"firebase": "^10.12.4",
 		"marked": "^13.0.2"
 	}
