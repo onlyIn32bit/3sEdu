@@ -6,7 +6,8 @@
 </script>
 
 <div class="body">
-	<form method="POST">
+	<a href="https://3sedu.edu.vn">QUAY VỀ</a>
+	<form method="POST" class="bg-slate-50 p-[20px]">
 		<label>
 			Prompt
 			<input name="prompt" type="text" />

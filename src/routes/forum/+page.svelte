@@ -2,10 +2,15 @@
 	import type { PageData } from './$types';
 	import { auth, db } from '$lib/firebase';
 	import { onMount } from 'svelte';
-	import { collection, addDoc, deleteDoc, doc } from 'firebase/firestore';
+	import { collection, addDoc, deleteDoc, doc, query, orderBy, getDocs } from 'firebase/firestore';
 	import { invalidateAll } from '$app/navigation';
-	export let data: PageData;
-	$: ({ posts } = data);
+	let posts;
+	async function load() {
+		const q = query(collection(db, 'posts'), orderBy('order', 'desc'));
+		const querySnapshot = await getDocs(q);
+		posts = querySnapshot.docs.map((doc) => ({ data: doc.data(), id: doc.id }));
+	}
+	load();
 	let title: string;
 	let subject: string;
 	let content: string;
@@ -27,7 +32,7 @@
 		const interval = setInterval(() => {
 			user = auth.currentUser;
 			time = new Date();
-			invalidateAll();
+			// invalidateAll();
 		}, 1000);
 
 		return () => clearInterval(interval);
@@ -77,7 +82,13 @@
 					</button>
 					<form class="flex flex-col justify-center gap-3" on:submit|preventDefault={createNewPost}>
 						<h2 class="self-center text-2xl font-semibold">Tạo bài viết mới</h2>
-						<input type="text" placeholder="Nhập tiêu đề bài viết" required bind:value={title} />
+						<input
+							class="mb-6 block w-full rounded-lg border border-gray-300 p-2"
+							type="text"
+							placeholder="Nhập tiêu đề bài viết"
+							required
+							bind:value={title}
+						/>
 
 						<label
 							>Chủ đề môn học<select class="" bind:value={subject}>
@@ -92,7 +103,7 @@
 							</select></label
 						>
 						<textarea
-							class="h-80 resize-none"
+							class="mb-6 block h-80 w-full resize-none rounded-lg border border-gray-300 p-2"
 							name="replyContent"
 							placeholder="Nhập nội dung bài viết"
 							required
@@ -120,7 +131,7 @@
 						>
 					{/if}
 					<div
-						class="flex flex-col items-center justify-center gap-2 rounded-md bg-slate-50 px-[20px] py-[10px] shadow-md"
+						class="flex w-[170px] flex-col items-center justify-center gap-2 rounded-md bg-slate-50 px-[20px] py-[10px] shadow-md"
 					>
 						<h2>Đăng bởi:</h2>
 						<img
@@ -128,20 +139,43 @@
 							src="https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133352156-stock-illustration-default-placeholder-profile-icon.jpg"
 							alt="Default Avatar"
 						/>
-						<h2 class="text-slate-700">{post.data.author}</h2>
+						<h2 class="w-[150px] overflow-hidden text-ellipsis text-wrap text-slate-700">
+							{post.data.author}
+						</h2>
 					</div>
 					<div>
 						<h2 class="text-semibold text-2xl">{post.data.title}</h2>
 						<span>Môn học: {post.data.subject}</span>
 						<p class="text-lg">Nội dung: {post.data.content}</p>
 						<h2 class="mt-4 text-slate-600">Thời gian đăng: {post.data.timestamp}</h2>
-						<!-- {#each post.data.replies as reply}
-							<div class="">
-								<h3>{reply.author}</h3>
-								<span>{reply.timestamp}</span>
-								<p>{reply.content}</p>
+						<div class="w-[60vw] rounded-xl bg-slate-50 px-[30px] py-[15px] shadow-lg">
+							<div class="flex items-center">
+								<h2 class="text-lg">Phần thảo luận</h2>
+								<form on:submit|preventDefault={() => {}} class="ml-auto flex justify-center gap-4">
+									<input
+										type="text"
+										name="reply"
+										class="block w-full rounded-xl border border-gray-300 p-2"
+										placeholder="Nhập câu trả lời"
+									/>
+									<button
+										class="w-[300px] select-none rounded-xl bg-violet-500 px-[10px] py-[5px] text-lg font-medium text-gray-50 shadow-md transition-all duration-300 hover:bg-violet-400"
+										>Thêm câu trả lời</button
+									>
+								</form>
 							</div>
-						{/each} -->
+							<div class="mt-[10px] flex flex-col gap-5">
+								{#each post.data.replies as reply}
+									<div class="rounded-lg bg-violet-50 px-[20px] py-[10px]">
+										<div class="flex items-center">
+											<h3 class="text-xl font-medium">Người trả lời: {reply.author}</h3>
+											<span class="ml-[20px] font-light text-slate-600">lúc {reply.timestamp}</span>
+										</div>
+										<p class="text-lg">Nội dung: {reply.content}</p>
+									</div>
+								{/each}
+							</div>
+						</div>
 					</div>
 				</div>
 			{/each}
