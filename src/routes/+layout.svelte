@@ -27,7 +27,7 @@
 </script>
 
 <div>
-	<nav class="flex h-[8svh] items-center justify-center gap-4 bg-slate-50 px-40 py-3">
+	<!-- <nav class="flex h-[8svh] items-center justify-center gap-4 bg-slate-50 px-40 py-3">
 		<a class="flex items-center justify-center" href="/">
 			<img class="w-[70px]" src={logo} alt="logo" />
 			<span class="text-sm">3sEdu</span>
@@ -73,13 +73,13 @@
 			{/if}
 			<span>{displayname}</span>
 		</div>
-	</nav>
+	</nav> -->
 
 	<main class="">
 		<slot />
 	</main>
 
-	<footer>3sEdu</footer>
+	<!-- <footer>3sEdu</footer> -->
 </div>
 
 <style>

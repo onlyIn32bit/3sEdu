@@ -5,7 +5,7 @@ import type { PageServerLoad } from './$types';
 const API_KEY = 'AIzaSyDCQ5_fsCMFDjTu0mxi7weMSOKdAiYAjKE';
 const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-let answer: string;
+var answer: string;
 
 export const actions: Actions = {
 	default: async ({ request }) => {
@@ -19,7 +19,5 @@ export const actions: Actions = {
 };
 
 export const load: PageServerLoad = async () => {
-	console.log(answer);
-
 	return { answer: answer ?? 'Hãy đặt câu hỏi cho Trợ lí AI' };
 };
