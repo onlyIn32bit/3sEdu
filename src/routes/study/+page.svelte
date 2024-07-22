@@ -3,14 +3,14 @@
 	import { selectedCourse } from '../store';
 	import filter from '$lib/images/filter-solid.svg';
 	import { goto, invalidateAll } from '$app/navigation';
-	import { db } from '$lib/firebase';
-	import { doc, getDoc } from 'firebase/firestore';
+	// import { db } from '$lib/firebase';
+	// import { doc, getDoc } from 'firebase/firestore';
 	import { onMount } from 'svelte';
 	export let data: PageData;
 	$: ({ courses } = data);
 	const subjects = [
 		'Toán',
-		'Văn',
+		'Ngữ Văn',
 		'Tiếng Anh',
 		'Lịch Sử',
 		'Địa Lí',
@@ -28,19 +28,19 @@
 
 		return () => clearInterval(interval);
 	});
-	selectedCourse.set(courseSelector);
 </script>
 
 <svelte:head>
 	<title>Góc học tập</title>
 </svelte:head>
 
-<section class="">
+<section class="min-h-[100vh]">
 	<!-- <div class="flex h-[92svh] w-screen items-center justify-center">
 		<p class="animate-bounce text-3xl font-semibold">LOADING...</p>
 	</div> -->
-	<div class="sticky top-0 z-50 flex h-[60px] items-center bg-slate-100 px-[100px] shadow-md">
+	<div class="sticky top-0 z-50 flex h-[60px] items-center bg-slate-200 px-[200px] shadow-md">
 		<button
+			class="rounded-lg px-[10px] py-[10px] transition-all duration-300 hover:bg-slate-300 focus:ring"
 			on:click|once={() => {
 				subjectSelector = [];
 			}}
@@ -61,11 +61,11 @@
 							class="peer sr-only"
 							on:click={() => {
 								if (subjectSelector.includes(subject)) {
-									subjectSelector.splice(subjectSelector.indexOf(subject), 1);
+									subjectSelector = subjectSelector.filter((m) => m !== subject);
 								} else {
-									subjectSelector.push(subject);
+									subjectSelector = [...subjectSelector, subject];
 								}
-								console.log(subjectSelector);
+								// console.log(subjectSelector);
 							}}
 						/>
 						<span
@@ -77,18 +77,21 @@
 			</div>
 		{/if}
 
-		<span>Đã chọn:</span>
 		<button
-			class=""
+			class="ml-auto select-none rounded-xl bg-violet-500 px-[10px] py-[5px] text-lg font-medium text-gray-50 shadow-md"
 			on:click={() => {
-				selectedCourse.subscribe((value) => {
-					goto('/study' + (value[0] == undefined ? '' : '/' + value[0]));
-				});
-			}}>Học những bài đã chọn</button
-		>
+				selectedCourse.set(courseSelector);
+				if (courseSelector[0] != undefined) {
+					goto('/study/' + courseSelector[0]);
+				} else {
+					alert('Hãy chọn bài học');
+				}
+			}}
+			>Bắt đầu học
+		</button>
 	</div>
 
-	<div class=" mt-[8svh] flex flex-wrap justify-center gap-10">
+	<div class=" mt-[6svh] flex flex-wrap justify-center gap-10">
 		{#each courses as course}
 			{#if subjectSelector.includes(course.data.subject)}
 				<div
@@ -112,11 +115,10 @@
 							class="peer sr-only"
 							on:click={() => {
 								if (courseSelector.includes(course.id)) {
-									courseSelector.splice(courseSelector.indexOf(course.id), 1);
+									courseSelector = courseSelector.filter((m) => m !== course.id);
 								} else {
-									courseSelector.push(course.id);
+									courseSelector = [...courseSelector, course.id];
 								}
-								console.log(courseSelector);
 							}}
 						/>
 						<div
