@@ -4,13 +4,13 @@ import { getAuth } from 'firebase/auth';
 
 // TODO: Replace the following with your app's Firebase project configuration
 const firebaseConfig = {
-	apiKey: 'AIzaSyCEKkn3d4X85FQSn4gA9K1yuZzi70W0xIs',
-	authDomain: 'pathtoknow-cd465.firebaseapp.com',
-	projectId: 'pathtoknow-cd465',
-	storageBucket: 'pathtoknow-cd465.appspot.com',
-	messagingSenderId: '753909775887',
-	appId: '1:753909775887:web:657b699253dbaabf2bad7a',
-	measurementId: 'G-H1PC92RCQ7'
+	apiKey: 'AIzaSyBUCVl1n17cRXRTbxSEJU6BLzleta44HG4',
+	authDomain: 'dedu-8d0ce.firebaseapp.com',
+	projectId: 'dedu-8d0ce',
+	storageBucket: 'dedu-8d0ce.appspot.com',
+	messagingSenderId: '187420501022',
+	appId: '1:187420501022:web:3882e30e5da28986cdfa0f',
+	measurementId: 'G-BTG8P7C7QY'
 };
 
 let app;

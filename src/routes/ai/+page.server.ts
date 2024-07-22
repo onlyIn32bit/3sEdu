@@ -19,5 +19,7 @@ export const actions: Actions = {
 };
 
 export const load: PageServerLoad = async () => {
+	console.log(answer);
+
 	return { answer: answer ?? 'Hãy đặt câu hỏi cho Trợ lí AI' };
 };

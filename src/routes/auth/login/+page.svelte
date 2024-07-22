@@ -10,9 +10,11 @@
 		signInWithEmailAndPassword(auth, email, password)
 			.then(() => {
 				console.log('Logged in');
+				alert('Đã đăng nhập');
 				goto('/');
 			})
 			.catch((error) => {
+				alert('Lỗi đăng nhập');
 				const errorCode = error.code;
 				const errorMessage = error.message;
 				console.log(errorCode, errorMessage);

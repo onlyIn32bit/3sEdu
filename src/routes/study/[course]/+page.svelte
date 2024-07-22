@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	import type { PageData } from './$types';
 	import { selectedCourse } from '../../store';
 	import { goto } from '$app/navigation';
@@ -23,4 +23,4 @@
 	</button>
 </div>
 <h1>{data.title}</h1>
-<div>{@html data.content}</div>
+<div>{@html data.content}</div> -->

@@ -16,10 +16,12 @@
 				});
 				await setDoc(doc(db, 'users', auth.currentUser.uid), {
 					grade: 0,
-					role: null
+					role: 'Student',
+					studied: []
 				});
 				console.log('Registered');
-				goto('/');
+				alert('Đã đăng kí');
+				goto('/', { invalidateAll: true });
 			})
 			.catch((error) => {
 				const errorCode = error.code;
