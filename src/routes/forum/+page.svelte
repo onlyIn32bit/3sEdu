@@ -135,13 +135,13 @@
 						<span>Môn học: {post.data.subject}</span>
 						<p class="text-lg">Nội dung: {post.data.content}</p>
 						<h2 class="mt-4 text-slate-600">Thời gian đăng: {post.data.timestamp}</h2>
-						{#each post.data.replies as reply}
+						<!-- {#each post.data.replies as reply}
 							<div class="">
 								<h3>{reply.author}</h3>
 								<span>{reply.timestamp}</span>
 								<p>{reply.content}</p>
 							</div>
-						{/each}
+						{/each} -->
 					</div>
 				</div>
 			{/each}
