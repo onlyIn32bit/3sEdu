@@ -11,22 +11,20 @@
 	const register = () => {
 		createUserWithEmailAndPassword(auth, email, password)
 			.then(async () => {
-				await updateProfile(auth.currentUser, {
-					displayName: name
-				});
 				await setDoc(doc(db, 'users', auth.currentUser.uid), {
+					username: name,
 					grade: 0,
 					role: 'Student',
 					studied: []
 				});
 				console.log('Registered');
 				alert('Đã đăng kí');
-				goto('/', { invalidateAll: true });
+				goto('/').then(() => goto('/'));
 			})
 			.catch((error) => {
 				const errorCode = error.code;
 				const errorMessage = error.message;
-				console.log(errorCode, errorMessage);
+				console.log(errorCode, ':', errorMessage);
 			});
 	};
 </script>

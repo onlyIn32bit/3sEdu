@@ -1,46 +1,47 @@
 <script lang="ts">
-	import type { PageData } from './$types';
 	import { marked } from 'marked';
-	export let data: PageData;
-	$: ({ answer } = data);
+	import { model } from '$lib/utils';
+
+	let prompt;
+	let answer = '';
+	let loading = false;
+
+	async function getAnswer() {
+		answer = '';
+		loading = true;
+		const result = await model.generateContent(prompt);
+		const response = await result.response;
+		answer = response.text();
+		if (answer != '') loading = false;
+	}
 </script>
 
-<div class="body">
-	<a href="https://3sedu.edu.vn" class="rounded-full p-[7px] px-[10px] py-[7px] font-semibold ring"
-		>QUAY VỀ</a
-	>
-	<form method="POST" class="mt-6 rounded-md bg-slate-50 p-[20px] shadow-lg">
+<svelte:head>
+	<title>AI</title>
+</svelte:head>
+
+<div class="px-80">
+	<form class="mt-6 w-fit rounded-md bg-slate-50 p-8" on:submit|preventDefault={getAnswer}>
 		<label>
-			<span class="text-xl font-medium">Nhập câu hỏi:</span>
-			<input name="prompt" type="text" class="w-[500px] rounded-md p-[4px] shadow-lg" />
+			<div class="label"><span class="label-text">Nhập câu hỏi:</span></div>
+			<input
+				name="prompt"
+				type="text"
+				class="input input-md input-bordered w-96"
+				bind:value={prompt}
+			/>
 		</label>
-		<button
-			class="w-[100px] select-none rounded-xl bg-violet-500 px-[10px] py-[5px] text-lg font-medium text-gray-50 shadow-md transition-all duration-300 hover:bg-violet-400"
-			>enter</button
-		>
+		<button class="btn btn-primary">enter</button>
 	</form>
 	<h1 class="mt-[10px] text-2xl font-semibold">Câu trả lời:</h1>
-	<div class="mt-[5px] text-xl">{@html marked(answer)}</div>
-</div>
 
-<style>
-	.body {
-		max-width: 800px;
-		margin: 0 auto;
-		margin-top: 20px;
-	}
-	.body form {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
-	.body form button {
-		margin-left: 10px;
-	}
-	.body form input {
-		flex: 1;
-	}
-	.body form label {
-		margin-right: 10px;
-	}
-</style>
+	<div class="prose prose-xl my-4">
+		{#if loading}
+			<div class="flex items-center gap-4">
+				<span class="loading loading-dots loading-md"></span>
+				<span>Đang tải câu trả lời</span>
+			</div>
+		{/if}
+		{@html marked(answer)}
+	</div>
+</div>

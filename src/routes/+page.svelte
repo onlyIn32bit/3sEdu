@@ -2,6 +2,7 @@
 	import heroPic from '$lib/images/main-pic.webp';
 	import arrow from '$lib/images/icon_arrow.svg';
 	import { goto } from '$app/navigation';
+	import { user } from '$lib/firebase';
 </script>
 
 <svelte:head>
@@ -28,30 +29,9 @@
 				<button
 					class="mt-[32px] box-border flex h-[85px] animate-bounce items-center justify-center rounded-full bg-violet-700 p-[5px] pl-[25px] text-4xl font-extrabold text-white shadow-xl transition-all duration-300 hover:translate-x-6"
 					on:click={() => {
-						goto('/study');
+						goto($user ? '/study' : '/');
 					}}>BẮT ĐẦU NGAY <img class="ml-[50px] w-[70px]" src={arrow} alt="Arrow" /></button
 				>
-			</div>
-		</div>
-	</div>
-	<div class="relative h-[500px]">
-		<div class="relative w-[100%]">
-			<div class="relative h-[500px] w-[90%] overflow-hidden">
-				<div
-					class="absolute left-[-300px] h-[500px] w-[300px] animate-infScroll rounded-xl bg-red-700"
-				></div>
-				<div
-					class="absolute left-[-300px] h-[500px] w-[300px] animate-[scrollRight_45s_linear_infinity] rounded-xl bg-red-700"
-				></div>
-				<div
-					class="absolute left-[-300px] h-[500px] w-[300px] animate-[scrollRight_45s_linear_infinity] rounded-xl bg-red-700"
-				></div>
-				<div
-					class="absolute left-[-300px] h-[500px] w-[300px] animate-[scrollRight_45s_linear_infinity] rounded-xl bg-red-700"
-				></div>
-				<div
-					class="absolute left-[-300px] h-[500px] w-[300px] animate-[scrollRight_45s_linear_infinity] rounded-xl bg-red-700"
-				></div>
 			</div>
 		</div>
 	</div>

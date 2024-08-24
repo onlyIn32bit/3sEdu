@@ -1,21 +1,20 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { auth, db } from '$lib/firebase';
-	import { onMount } from 'svelte';
-	import { collection, addDoc, deleteDoc, doc, query, orderBy, getDocs } from 'firebase/firestore';
+	import { db, user } from '$lib/firebase';
+	import { collection, addDoc, deleteDoc, doc } from 'firebase/firestore';
+	import { fade, fly } from 'svelte/transition';
+	import Alert from '$lib/components/Alert.svelte';
 	import { invalidateAll } from '$app/navigation';
-	let posts;
-	async function load() {
-		const q = query(collection(db, 'posts'), orderBy('order', 'desc'));
-		const querySnapshot = await getDocs(q);
-		posts = querySnapshot.docs.map((doc) => ({ data: doc.data(), id: doc.id }));
-	}
-	load();
+
+	export let data: PageData;
+	$: ({ posts } = data);
+
 	let title: string;
 	let subject: string;
 	let content: string;
 	let formPanel = false;
-	let user = auth.currentUser;
+	let displayAlert = false;
+	let alertContent = '';
 	let time = new Date();
 	$: currentTime =
 		time.getHours() +
@@ -27,20 +26,12 @@
 		time.getMonth() +
 		'/' +
 		time.getFullYear();
-	$: orderTime = time.getTime();
-	onMount(() => {
-		const interval = setInterval(() => {
-			user = auth.currentUser;
-			time = new Date();
-			// invalidateAll();
-		}, 1000);
 
-		return () => clearInterval(interval);
-	});
+	$: orderTime = time.getTime();
 
 	const createNewPost = () => {
 		let post = {
-			author: user?.displayName as string,
+			author: $user?.displayName as string,
 			content: content as string,
 			replies: [],
 			subject: subject as string,
@@ -50,19 +41,43 @@
 		};
 		const docRef = addDoc(collection(db, 'posts'), post);
 		console.log('posted');
-		location.reload();
+		formPanel = false;
+		invalidateAll();
+		alertContent = 'Đã đăng bài viết thành công!';
+		displayAlert = true;
+		setTimeout(() => {
+			displayAlert = false;
+			alertContent = '';
+		}, 3000);
 	};
+
+	function deletePost(id) {
+		deleteDoc(doc(db, 'posts', id));
+		invalidateAll();
+		// alert('Đã xóa bài viết');
+		alertContent = 'Đã xóa bài viết thành công!';
+		displayAlert = true;
+		setTimeout(() => {
+			displayAlert = false;
+			alertContent = '';
+		}, 3000);
+	}
 </script>
 
 <svelte:head>
 	<title>Diễn đàn</title>
 </svelte:head>
 
-<section data-sveltekit-reload class="px-52">
-	{#if user == undefined}
-		<h1 class="text-center text-2xl">Đang tải...</h1>
+<section class="px-52">
+	{#if !$user}
+		<div
+			class="fixed left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center text-2xl"
+		>
+			Đang tải<span class="loading loading-spinner loading-md ml-4"></span>
+		</div>
 	{:else}
 		<button
+			class="btn my-4"
 			on:click={() => {
 				formPanel = !formPanel;
 			}}
@@ -70,64 +85,79 @@
 		</button>
 		{#if formPanel}
 			<div
-				class="fixed left-0 top-0 z-10 flex h-screen w-screen items-center justify-center bg-slate-900 bg-opacity-40"
+				class="fixed left-1/2 top-1/2 z-20 flex w-96 -translate-x-1/2 -translate-y-1/2 flex-col rounded-2xl bg-slate-50 px-8 py-5 shadow-2xl"
+				transition:fade
 			>
-				<div class="z-20 flex w-96 flex-col rounded-2xl bg-slate-50 px-8 py-5 shadow-2xl">
-					<button
-						class="ml-auto"
-						on:click={() => {
-							formPanel = !formPanel;
-						}}
-						>Hủy
-					</button>
-					<form class="flex flex-col justify-center gap-3" on:submit|preventDefault={createNewPost}>
-						<h2 class="self-center text-2xl font-semibold">Tạo bài viết mới</h2>
-						<input
-							class="mb-6 block w-full rounded-lg border border-gray-300 p-2"
-							type="text"
-							placeholder="Nhập tiêu đề bài viết"
-							required
-							bind:value={title}
+				<button
+					class="btn btn-circle btn-sm ml-auto"
+					on:click={() => {
+						formPanel = false;
+					}}
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-6 w-6"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M6 18L18 6M6 6l12 12"
 						/>
+					</svg>
+				</button>
+				<form class="flex flex-col justify-center gap-3" on:submit|preventDefault={createNewPost}>
+					<h2 class="self-center text-2xl font-semibold">Tạo bài viết mới</h2>
+					<input
+						class="input input-md input-bordered"
+						type="text"
+						placeholder="Nhập tiêu đề bài viết"
+						required
+						bind:value={title}
+					/>
 
-						<label
-							>Chủ đề môn học<select class="" bind:value={subject}>
-								<option value="Toán">Toán</option>
-								<option value="Ngữ Văn">Ngữ Văn</option>
-								<option value="Tiếng Anh">Tiếng Anh</option>
-								<option value="Lịch Sử">Lịch Sử</option>
-								<option value="Địa Lý">Địa Lý</option>
-								<option value="Sinh Học">Sinh Học</option>
-								<option value="Vật Lý">Vật Lý</option>
-								<option value="Hóa Học">Hóa Học</option>
-							</select></label
-						>
-						<textarea
-							class="mb-6 block h-80 w-full resize-none rounded-lg border border-gray-300 p-2"
-							name="replyContent"
-							placeholder="Nhập nội dung bài viết"
-							required
-							bind:value={content}
-						></textarea>
-						<button
-							class="h-7 rounded-lg bg-violet-500 text-white shadow-xl transition-all duration-300 hover:bg-violet-600"
-							type="submit">Post</button
-						>
-					</form>
-				</div>
+					<label>
+						<div class="label">
+							<span class="label-text">Chủ đề môn học</span>
+						</div>
+
+						<select class="select select-bordered select-md" bind:value={subject}>
+							<option value="Toán">Toán</option>
+							<option value="Ngữ Văn">Ngữ Văn</option>
+							<option value="Tiếng Anh">Tiếng Anh</option>
+							<option value="Lịch Sử">Lịch Sử</option>
+							<option value="Địa Lý">Địa Lý</option>
+							<option value="Sinh Học">Sinh Học</option>
+							<option value="Vật Lý">Vật Lý</option>
+							<option value="Hóa Học">Hóa Học</option>
+						</select>
+					</label>
+					<textarea
+						class="textarea textarea-bordered textarea-md"
+						name="replyContent"
+						placeholder="Nhập nội dung bài viết"
+						required
+						bind:value={content}
+					></textarea>
+					<button class="btn btn-primary" type="submit">Post</button>
+				</form>
 			</div>
+			<button
+				class="fixed left-0 top-0 z-10 h-screen w-screen bg-slate-900 bg-opacity-20 backdrop-blur"
+				on:click={() => (formPanel = false)}
+				transition:fade
+			></button>
 		{/if}
 
 		<div class="flex flex-col gap-8">
 			{#each posts as post}
 				<div class="relative flex gap-10 rounded-md bg-slate-100 px-10 py-7 shadow-lg">
-					{#if post.data.author == user.displayName}
-						<button
-							class="absolute right-5 top-4 text-red-500"
-							on:click={() => {
-								deleteDoc(doc(db, 'posts', post.id));
-								alert('Đã xóa bài viết');
-							}}>Xóa bài viết này</button
+					{#if post.data.author == $user?.displayName}
+						<button class="absolute right-5 top-4 text-red-500" on:click={() => deletePost(post.id)}
+							>Xóa bài viết này</button
 						>
 					{/if}
 					<div
@@ -144,29 +174,26 @@
 						</h2>
 					</div>
 					<div>
-						<h2 class="text-semibold text-2xl">{post.data.title}</h2>
+						<h2 class="text-bold text-2xl">{post.data.title}</h2>
 						<span>Môn học: {post.data.subject}</span>
 						<p class="text-lg">Nội dung: {post.data.content}</p>
 						<h2 class="mt-4 text-slate-600">Thời gian đăng: {post.data.timestamp}</h2>
-						<div class="w-[60vw] rounded-xl bg-slate-50 px-[30px] py-[15px] shadow-lg">
-							<div class="flex items-center">
+						<div class="rounded-xl bg-slate-50 px-[30px] py-[15px]">
+							<div class="flex items-center gap-16">
 								<h2 class="text-lg">Phần thảo luận</h2>
 								<form on:submit|preventDefault={() => {}} class="ml-auto flex justify-center gap-4">
 									<input
 										type="text"
 										name="reply"
-										class="block w-full rounded-xl border border-gray-300 p-2"
+										class="input input-bordered"
 										placeholder="Nhập câu trả lời"
 									/>
-									<button
-										class="w-[300px] select-none rounded-xl bg-violet-500 px-[10px] py-[5px] text-lg font-medium text-gray-50 shadow-md transition-all duration-300 hover:bg-violet-400"
-										>Thêm câu trả lời</button
-									>
+									<button class="btn">Thêm câu trả lời</button>
 								</form>
 							</div>
-							<div class="mt-[10px] flex flex-col gap-5">
+							<div class="flex flex-col gap-5">
 								{#each post.data.replies as reply}
-									<div class="rounded-lg bg-violet-50 px-[20px] py-[10px]">
+									<div class="mt-4 rounded-lg bg-violet-50 px-[20px] py-[10px]">
 										<div class="flex items-center">
 											<h3 class="text-xl font-medium">Người trả lời: {reply.author}</h3>
 											<span class="ml-[20px] font-light text-slate-600">lúc {reply.timestamp}</span>
@@ -180,5 +207,8 @@
 				</div>
 			{/each}
 		</div>
+		{#if displayAlert}
+			<Alert type="success" content={alertContent} />
+		{/if}
 	{/if}
 </section>

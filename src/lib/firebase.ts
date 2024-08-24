@@ -1,8 +1,8 @@
-import { initializeApp, getApps } from 'firebase/app';
+import { initializeApp, getApps, type FirebaseApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { writable } from 'svelte/store';
 
-// TODO: Replace the following with your app's Firebase project configuration
 const firebaseConfig = {
 	apiKey: 'AIzaSyBUCVl1n17cRXRTbxSEJU6BLzleta44HG4',
 	authDomain: 'dedu-8d0ce.firebaseapp.com',
@@ -13,10 +13,33 @@ const firebaseConfig = {
 	measurementId: 'G-BTG8P7C7QY'
 };
 
-if (!getApps().length) {
-	initializeApp(firebaseConfig);
-}
-const auth = getAuth();
-const db = getFirestore();
+let app: FirebaseApp;
 
-export { auth, db };
+if (!getApps().length) {
+	app = initializeApp(firebaseConfig);
+}
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+function userStore() {
+	let unsubscribe: () => void;
+
+	if (!auth || !globalThis.window) {
+		console.warn('Error Auth');
+		const { subscribe } = writable(null);
+		return {
+			subscribe
+		};
+	}
+	const { subscribe } = writable(auth?.currentUser ?? null, (set) => {
+		unsubscribe = onAuthStateChanged(auth, (user) => {
+			set(user);
+		});
+
+		return () => unsubscribe();
+	});
+	return { subscribe };
+}
+const user = userStore();
+
+export { auth, db, user };

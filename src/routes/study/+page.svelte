@@ -1,11 +1,9 @@
 <script lang="ts">
+	import { courseStores } from '$lib/stores/course';
+	import { fade } from 'svelte/transition';
 	import type { PageData } from './$types';
-	import { selectedCourse } from '../store';
 	import filter from '$lib/images/filter-solid.svg';
 	import { goto, invalidateAll } from '$app/navigation';
-	// import { db } from '$lib/firebase';
-	// import { doc, getDoc } from 'firebase/firestore';
-	import { onMount } from 'svelte';
 	export let data: PageData;
 	$: ({ courses } = data);
 	const subjects = [
@@ -21,13 +19,6 @@
 	let sortMenu = false;
 	let subjectSelector = subjects;
 	let courseSelector: string[] = [];
-	onMount(() => {
-		const interval = setInterval(() => {
-			invalidateAll();
-		}, 1000);
-
-		return () => clearInterval(interval);
-	});
 </script>
 
 <svelte:head>
@@ -38,7 +29,7 @@
 	<!-- <div class="flex h-[92svh] w-screen items-center justify-center">
 		<p class="animate-bounce text-3xl font-semibold">LOADING...</p>
 	</div> -->
-	<div class="sticky top-0 z-50 flex h-[60px] items-center bg-slate-200 px-[200px] shadow-md">
+	<div class="sticky top-0 z-50 flex h-[60px] items-center bg-slate-100 px-[200px] shadow-md">
 		<button
 			class="rounded-lg px-[10px] py-[10px] transition-all duration-300 hover:bg-slate-300 focus:ring"
 			on:click|once={() => {
@@ -46,8 +37,12 @@
 			}}
 			on:click={() => {
 				sortMenu = !sortMenu;
-			}}><img class="w-[30px]" src={filter} alt="Filter" /></button
+			}}><img class="w-[30px]" src={filter} alt="Filter Button" /></button
 		>
+		<label>
+			<input type="checkbox" name="" id="" />
+			<span>Ẩn các bài đã học</span>
+		</label>
 		{#if sortMenu}
 			<div
 				class="absolute top-[70px] grid grid-cols-2 gap-2 rounded-xl bg-slate-50 px-[20px] py-[15px] pt-[40px] shadow-lg"
@@ -80,8 +75,8 @@
 		<button
 			class="ml-auto select-none rounded-xl bg-violet-500 px-[10px] py-[5px] text-lg font-medium text-gray-50 shadow-md"
 			on:click={() => {
-				selectedCourse.set(courseSelector);
-				if (courseSelector[0] != undefined) {
+				courseStores.set(courseSelector);
+				if (courseSelector[0]) {
 					goto('/study/' + courseSelector[0]);
 				} else {
 					alert('Hãy chọn bài học');
@@ -96,6 +91,7 @@
 			{#if subjectSelector.includes(course.data.subject)}
 				<div
 					class="relative h-[300px] w-[450px] rounded-2xl bg-slate-100 p-[22px] has-[:checked]:bg-violet-100 has-[:checked]:ring"
+					transition:fade
 				>
 					<div
 						class="absolute left-1/2 h-[190px] w-[90%] -translate-x-1/2 rounded-xl bg-white"
@@ -122,8 +118,12 @@
 							}}
 						/>
 						<div
-							class="peer-focus:ring- peer relative h-8 w-8 rounded-full bg-gray-200 peer-checked:bg-violet-500 peer-checked:ring"
-						></div>
+							class="peer relative flex h-8 w-8 select-none items-center justify-center rounded-full bg-gray-200 font-bold text-white peer-checked:bg-violet-500 peer-checked:ring peer-focus:ring"
+						>
+							{courseSelector.indexOf(course.id) + 1 == 0
+								? ''
+								: courseSelector.indexOf(course.id) + 1}
+						</div>
 					</label>
 				</div>
 			{/if}
